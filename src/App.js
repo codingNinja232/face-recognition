@@ -57,7 +57,7 @@ const FaceDetectionApp = () => {
       resizedDetections.forEach((detection) => {
         const faceDescriptor = detection.descriptor;
         const match = faces.find((face) => 
-          faceapi.euclideanDistance(face.descriptor, faceDescriptor) < 0.6
+          faceapi.euclideanDistance(face.descriptor, faceDescriptor) < 0.75
         );
 
         if (match) {
