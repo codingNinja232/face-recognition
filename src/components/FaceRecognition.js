@@ -4,6 +4,7 @@ import './FaceRecognition.css';
 
 const FaceRecognition = ({ videoRef, handleVideoOnPlay, detections }) => {
   const [capturedImages, setCapturedImages] = useState([]);
+  const [capturedFaceData, setCapturedFaceData] = useState([]);
 
   useEffect(() => {
     const startVideo = () => {
@@ -44,6 +45,17 @@ const FaceRecognition = ({ videoRef, handleVideoOnPlay, detections }) => {
     }
   }, [detections, videoRef]);
 
+  const saveFaceData = async () => {
+    //const canvas = document.createElement('canvas');
+    //const img = await canvas.loadImage(dataUrl);
+    //const detections = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
+    const descriptor = await detections.descriptor;
+    console.log(descriptor);
+
+  }
+
+  let jsonDescriptor = {};
+
   const captureImage = () => {
     const video = videoRef.current;
 
@@ -63,11 +75,26 @@ const FaceRecognition = ({ videoRef, handleVideoOnPlay, detections }) => {
         });
         faceapi.draw.drawDetections(canvas, resizedDetections);
         faceapi.draw.drawFaceLandmarks(canvas, resizedDetections);
+        const descriptors = resizedDetections.map(face => face.descriptor);
+        console.log(detections);
+        
+        jsonDescriptor = JSON.stringify(Array.from(descriptors));
+        setCapturedFaceData(jsonDescriptor);
+        
+        console.log(descriptors);
         //faceapi.draw.drawFaceExpressions(canvas, resizedDetections);
+        //saveFaceData();
+        
       }
 
       const dataUrl = canvas.toDataURL('image/jpeg');
+      
       setCapturedImages([dataUrl]);  
+      
+      //console.log(dataUrl);
+      //const myFace = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
+      //const descriptor = myFace.descriptor;
+      //console.log(faceapi.detectSingleFace(dataUrl).withFaceLandmarks().withFaceDescriptor());
     }
   };
 
@@ -85,6 +112,7 @@ const FaceRecognition = ({ videoRef, handleVideoOnPlay, detections }) => {
       <button onClick={captureImage} className="capture-button">
         Capture Image
       </button>
+
       <div className="captured-images-container">
         {capturedImages.map((image, index) => (
           <img
@@ -95,6 +123,8 @@ const FaceRecognition = ({ videoRef, handleVideoOnPlay, detections }) => {
           />
         ))}
       </div>
+      
+      
     </div>
   );
 };
