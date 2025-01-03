@@ -9,7 +9,8 @@ const FaceDetectionApp = () => {
   const [newFaces, setNewFaces] = useState([]);
   const [message, setMessage] = useState("");
   const [modelsLoaded, setModelsLoaded] = useState(false);
-  const CONFIDENCE_THRESHOLD = 0.3;
+  const CONFIDENCE_THRESHOLD = 0.9;
+  const SIMILARITY_THRESHOLD = 0.25;
 
   // Function to load static images and extract face descriptors
   const loadStaticImages = async () => {
@@ -106,7 +107,7 @@ const FaceDetectionApp = () => {
         if (confidence < CONFIDENCE_THRESHOLD) return;
 
         const match = faces.find(
-          (face) => faceapi.euclideanDistance(face.descriptor, faceDescriptor) < CONFIDENCE_THRESHOLD
+          (face) => faceapi.euclideanDistance(face.descriptor, faceDescriptor) < SIMILARITY_THRESHOLD
         );
 
         if (match) {
@@ -114,8 +115,11 @@ const FaceDetectionApp = () => {
           return;
         }
 
-        const isDuplicate = newFaces.some(
-          (face) => faceapi.euclideanDistance(face.descriptor, faceDescriptor) < CONFIDENCE_THRESHOLD
+        let isDuplicate = newFaces.some(
+          (face) => faceapi.euclideanDistance(face.descriptor, faceDescriptor) < SIMILARITY_THRESHOLD
+        );
+        isDuplicate = faces.some(
+          (face) => faceapi.euclideanDistance(face.descriptor, faceDescriptor) < SIMILARITY_THRESHOLD
         );
 
         if (!isDuplicate && newFaces.length < 5) {
@@ -124,7 +128,7 @@ const FaceDetectionApp = () => {
             thumbnail: createThumbnail(videoRef.current, detection.detection.box),
           };
           setNewFaces((prev) => [...prev, newFace]);
-          console.log(newFaces);
+          console.log(newFaces.length);
         }
       });
     }

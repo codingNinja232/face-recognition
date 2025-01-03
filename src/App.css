@@ -38,11 +38,14 @@
   text-align: center;
   margin-top: 20px;
 }
-
+.app-container {
+  align-items: center;          /* Center items vertically */
+}
 .overlay-container {
   position: relative; /* Establishes a positioning context */
-  width: 640px; /* Set your desired width */
-  height: 360px; /* Set your desired height */
+  display: block; /* Remove inline spacing */
+  width: 100vw; /* Full width of the viewport */
+  height: 50vh; /* Maintain aspect ratio */
 }
 
 video {
@@ -67,10 +70,13 @@ body {
   justify-content: center;
   height: 100vh;
   background-color: #f9f9f9;
+  
+  overflow: hidden; /* Prevent scrollbars */
 }
 
 h1 {
   color: #333;
+  text-align: center;  
 }
 
 video {
